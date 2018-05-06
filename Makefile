@@ -1,6 +1,6 @@
 CXX     = g++
 CFLAGS  = -g -O3 -Wall -std=c++0x -pthread
-LIBS    = -lpthread -lasound
+LIBS    = -lpthread -lasound -lwiringPi
 LDFLAGS = -g
 
 OBJECTS = Biquad.o CalDMR.o CalDStarRX.o CalDStarTX.o CalNXDN.o CalP25.o CWIdTX.o DMRDMORX.o DMRDMOTX.o \
