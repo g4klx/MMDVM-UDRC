@@ -124,7 +124,7 @@ int main(int argc, char** argv)
   if (!ret)
     return 1;
 
-  CSoundCardReaderWriter sound("READ", "WRITE", 24000U, RX_BLOCK_SIZE);
+  CSoundCardReaderWriter sound("hw:CARD=udrc,DEV=0", "hw:CARD=udrc,DEV=0", 24000U, RX_BLOCK_SIZE);
   sound.setCallback(&io);
 
   ret = sound.open();
