@@ -161,7 +161,7 @@ void CP25RX::processHdr(float sample)
     if (m_hdrSyncPtr != m_lduSyncPtr) {
       calculateLevels(m_hdrStartPtr, P25_HDR_FRAME_LENGTH_SYMBOLS);
 
-      DEBUG4("P25RX: sync found in Hdr pos/centre/threshold", m_hdrSyncPtr, m_centreVal, m_thresholdVal);
+      DEBUG4("P25RX: sync found in Hdr pos/centre/threshold", m_hdrSyncPtr, int16_t(m_centreVal * 2048.0F), int16_t(m_thresholdVal * 2048.0F));
 
       uint8_t frame[P25_HDR_FRAME_LENGTH_BYTES + 1U];
       samplesToBits(m_hdrStartPtr, P25_HDR_FRAME_LENGTH_SYMBOLS, frame, 8U, m_centreVal, m_thresholdVal);
@@ -207,7 +207,7 @@ void CP25RX::processLdu(float sample)
 
     calculateLevels(m_lduStartPtr, P25_LDU_FRAME_LENGTH_SYMBOLS);
 
-    DEBUG4("P25RX: sync found in Ldu pos/centre/threshold", m_lduSyncPtr, m_centreVal, m_thresholdVal);
+    DEBUG4("P25RX: sync found in Ldu pos/centre/threshold", m_lduSyncPtr, int16_t(m_centreVal * 2048.0F), int16_t(m_thresholdVal * 2048.0F));
 
     uint8_t frame[P25_LDU_FRAME_LENGTH_BYTES + 3U];
     samplesToBits(m_lduStartPtr, P25_LDU_FRAME_LENGTH_SYMBOLS, frame, 8U, m_centreVal, m_thresholdVal);
@@ -369,7 +369,7 @@ void CP25RX::calculateLevels(uint16_t start, uint16_t count)
 
   float threshold = posThresh - centre;
 
-  DEBUG5("P25RX: pos/neg/centre/threshold", posThresh, negThresh, centre, threshold);
+  DEBUG5("P25RX: pos/neg/centre/threshold", int16_t(posThresh * 2048.0F), int16_t(negThresh * 2048.0F), int16_t(centre * 2048.0F), int16_t(threshold * 2048.0F));
 
   if (m_averagePtr == NOAVEPTR) {
     for (uint8_t i = 0U; i < 16U; i++) {

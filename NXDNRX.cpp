@@ -163,7 +163,7 @@ void CNXDNRX::processData(float sample)
 
     calculateLevels(m_startPtr, NXDN_FRAME_LENGTH_SYMBOLS);
 
-    DEBUG4("NXDNRX: sync found pos/centre/threshold", m_fswPtr, m_centreVal, m_thresholdVal);
+    DEBUG4("NXDNRX: sync found pos/centre/threshold", m_fswPtr, int16_t(m_centreVal * 2048.0F), int16_t(m_thresholdVal * 2048.0F));
 
     uint8_t frame[NXDN_FRAME_LENGTH_BYTES + 3U];
     samplesToBits(m_startPtr, NXDN_FRAME_LENGTH_SYMBOLS, frame, 8U, m_centreVal, m_thresholdVal);
@@ -306,7 +306,7 @@ void CNXDNRX::calculateLevels(uint16_t start, uint16_t count)
 
   float threshold = posThresh - centre;
 
-  DEBUG5("NXDNRX: pos/neg/centre/threshold", posThresh, negThresh, centre, threshold);
+  DEBUG5("NXDNRX: pos/neg/centre/threshold", int16_t(posThresh * 2048.0F), int16_t(negThresh * 2048.0F), int16_t(centre * 2048.0F), int16_t(threshold * 2048.0F));
 
   if (m_averagePtr == NOAVEPTR) {
     for (uint8_t i = 0U; i < 16U; i++) {

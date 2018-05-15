@@ -137,7 +137,7 @@ bool CDMRDMORX::processSample(float sample)
 
         switch (dataType) {
           case DT_DATA_HEADER:
-            DEBUG4("DMRDMORX: data header found pos/centre/threshold", m_syncPtr, centre, threshold);
+            DEBUG4("DMRDMORX: data header found pos/centre/threshold", m_syncPtr, int16_t(centre * 2048.0F), int16_t(threshold * 2048.0F));
             writeData(frame);
             m_state = DMORXS_DATA;
             m_type  = 0x00U;
@@ -146,32 +146,32 @@ bool CDMRDMORX::processSample(float sample)
           case DT_RATE_34_DATA:
           case DT_RATE_1_DATA:
             if (m_state == DMORXS_DATA) {
-              DEBUG4("DMRDMORX: data payload found pos/centre/threshold", m_syncPtr, centre, threshold);
+              DEBUG4("DMRDMORX: data payload found pos/centre/threshold", m_syncPtr, int16_t(centre * 2048.0F), int16_t(threshold * 2048.0F));
               writeData(frame);
               m_type = dataType;
             }
             break;
           case DT_VOICE_LC_HEADER:
-            DEBUG4("DMRDMORX: voice header found pos/centre/threshold", m_syncPtr, centre, threshold);
+            DEBUG4("DMRDMORX: voice header found pos/centre/threshold", m_syncPtr, int16_t(centre * 2048.0F), int16_t(threshold * 2048.0F));
             writeData(frame);
             m_state = DMORXS_VOICE;
             break;
           case DT_VOICE_PI_HEADER:
             if (m_state == DMORXS_VOICE) {
-              DEBUG4("DMRDMORX: voice pi header found pos/centre/threshold", m_syncPtr, centre, threshold);
+              DEBUG4("DMRDMORX: voice pi header found pos/centre/threshold", m_syncPtr, int16_t(centre * 2048.0F), int16_t(threshold * 2048.0F));
               writeData(frame);
             }
             m_state = DMORXS_VOICE;
             break;
           case DT_TERMINATOR_WITH_LC:
             if (m_state == DMORXS_VOICE) {
-              DEBUG4("DMRDMORX: voice terminator found pos/centre/threshold", m_syncPtr, centre, threshold);
+              DEBUG4("DMRDMORX: voice terminator found pos/centre/threshold", m_syncPtr, int16_t(centre * 2048.0F), int16_t(threshold * 2048.0F));
               writeData(frame);
               reset();
             }
             break;
           default:    // DT_CSBK
-            DEBUG4("DMRDMORX: csbk found pos/centre/threshold", m_syncPtr, centre, threshold);
+            DEBUG4("DMRDMORX: csbk found pos/centre/threshold", m_syncPtr, int16_t(centre * 2048.0F), int16_t(threshold * 2048.0F));
             writeData(frame);
             reset();
             break;
@@ -179,7 +179,7 @@ bool CDMRDMORX::processSample(float sample)
       }
     } else if (m_control == CONTROL_VOICE) {
       // Voice sync
-      DEBUG4("DMRDMORX: voice sync found pos/centre/threshold", m_syncPtr, centre, threshold);
+      DEBUG4("DMRDMORX: voice sync found pos/centre/threshold", m_syncPtr, int16_t(centre * 2048.0F), int16_t(threshold * 2048.0F));
       writeData(frame);
       m_state     = DMORXS_VOICE;
       m_syncCount = 0U;
