@@ -29,8 +29,8 @@ class CSerialPort {
 public:
   CSerialPort();
 
-  bool open(const std::string& port);
-
+  bool open(const std::string& port, const std::string& vptyPath);
+  
   void process();
 
   void writeDStarHeader(const uint8_t* header, uint8_t length);
