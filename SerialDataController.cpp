@@ -450,7 +450,8 @@ int CSerialDataController::read(unsigned char* buffer, unsigned int length)
 			}
 
 			if (len > 0)
-				offset += len;
+				return len; // FIXME: Read once, since getting stuck @ "else select"
+				//offset += len;
 		}
 	}
 
