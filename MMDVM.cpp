@@ -111,32 +111,35 @@ int main(int argc, char** argv)
   std::string vptyPath("ttyMMDVM0");
   bool daemon = false;
  
-  if(getuid() == 0) vptyPath = "/dev/ttyMMDVM0";
+  if (::getuid() == 0)
+    vptyPath = "/dev/ttyMMDVM0";
     
-  for(int i=1; i<argc; i++) {
-        char *arg = argv[i];
-        char *param = NULL;
+  for (int i=1; i<argc; i++) {
+    char* arg = argv[i];
+    char* param = NULL;
 	
-	if(arg[0] == '-' && arg[1] == 'd') daemon = true;
-	
-        else {
-	  if(arg[0] == '-' && i+1 < argc) param = argv[i+1];
+    if (arg[0] == '-' && arg[1] == 'd') {
+      daemon = true;
+    } else {
+      if (arg[0] == '-' && i + 1 < argc)
+        param = argv[i+1];
 
-          if((strcmp("-port", arg)==0) && param != NULL) {
-             i++;
-             vptyPath = param;
-          } else if(strcmp("-audio", arg)==0 && param != NULL) {
-             i++;
-             audioDev = param;
-          } else 
-	     ::fprintf(stderr, "MMDVM-UDRC modem\nUsage: MMDVM [-daemon] -port <vpty port> -audio <audiodev>\n\nUsing params: <vpty port> = %s | <audiodev> = %s \n", vptyPath.c_str(), audioDev.c_str());
- 	}
-   }
+      if (::strcmp("-port", arg) == 0 && param != NULL) {
+        i++;
+        vptyPath = param;
+      } else if (::strcmp("-audio", arg) == 0 && param != NULL) {
+        i++;
+        audioDev = param;
+      } else { 
+        ::fprintf(stderr, "MMDVM-UDRC modem\nUsage: MMDVM [-daemon] -port <vpty port> -audio <audiodev>\n\nUsing params: <vpty port> = %s | <audiodev> = %s \n", vptyPath.c_str(), audioDev.c_str());
+      }
+    }
+  }
 
   bool ret = serial.open("/dev/ptmx", vptyPath);
   if (!ret) {
-	::fprintf(stderr,"Unable to open serial port on vpty: %s\n",vptyPath.c_str());
-	return 1;
+    ::fprintf(stderr,"Unable to open serial port on vpty: %s\n",vptyPath.c_str());
+    return 1;
   }
 
   CSoundCardReaderWriter sound(audioDev, audioDev, 24000U, RX_BLOCK_SIZE);
@@ -144,8 +147,8 @@ int main(int argc, char** argv)
 
   ret = sound.open();
   if (!ret) {
-	::fprintf(stderr,"Unable to open audio device: %s\n",audioDev.c_str());
-    	return 1;
+    ::fprintf(stderr, "Unable to open audio device: %s\n", audioDev.c_str());
+    return 1;
   }
 
   if (daemon) {
