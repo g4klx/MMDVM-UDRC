@@ -302,7 +302,7 @@ CSerialDataController::~CSerialDataController()
 {
 }
 
-bool CSerialDataController::open(const std::string& device, SERIAL_SPEED speed)
+bool CSerialDataController::open(const std::string& device, SERIAL_SPEED speed, const std::string& vptyPath)
 {
 	assert(!device.empty());
 	assert(m_fd == -1);
@@ -318,6 +318,31 @@ bool CSerialDataController::open(const std::string& device, SERIAL_SPEED speed)
 		::close(m_fd);
 		return false;
 	}
+
+	if(::grantpt(m_fd) == -1) {
+	  ::fprintf(stderr, "Error granting pseudotty to : %s\n", device.c_str());
+	  return false;
+	}
+
+    	if(::unlockpt(m_fd) == -1) {
+	  ::fprintf(stderr, "Error unlocking pseudotty for : %s\n", device.c_str());
+	  return false;
+        }
+
+        //char cwdpath[256];		// append cwd with vptypath ?
+        //::getcwd(cwdpath, 256);
+
+    	char* pts_name = ::ptsname(m_fd);
+
+    	if (unlink(vptyPath.c_str()) == -1) {
+	  ::fprintf(stderr, "Link does not exist: %s <> %s\n", pts_name, vptyPath.c_str());
+	}
+
+    	if ((symlink(pts_name, vptyPath.c_str())) == -1) {		
+        	::fprintf(stderr,"Error creating symlink from %s to %s\n", pts_name, vptyPath.c_str());
+        	return false;
+	}
+    	else fprintf(stderr, "Virtual pty: %s <> %s\n\n", pts_name, vptyPath.c_str());
 
 	termios termios;
 	if (::tcgetattr(m_fd, &termios) < 0) {
@@ -425,7 +450,8 @@ int CSerialDataController::read(unsigned char* buffer, unsigned int length)
 			}
 
 			if (len > 0)
-				offset += len;
+				return len; // FIXME: Read once, since getting stuck @ "else select"
+				//offset += len;
 		}
 	}
 

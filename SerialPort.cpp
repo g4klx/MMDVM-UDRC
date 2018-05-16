@@ -437,9 +437,9 @@ void CSerialPort::setMode(MMDVM_STATE modemState)
   io.setMode();
 }
 
-bool CSerialPort::open(const std::string& port)
+bool CSerialPort::open(const std::string& port, const std::string& path)
 {
-  return m_serialPort.open(port, SERIAL_19200);
+  return m_serialPort.open(port, SERIAL_19200, path);
 }
 
 void CSerialPort::process()

@@ -105,31 +105,48 @@ void loop()
 
 int main(int argc, char** argv)
 {
-  if (argc == 1) {
-    ::fprintf(stderr, "Usage: MMDVM [-daemon] <port>\n");
-    return 1;
-  }
+  std::string audioDev("hw:CARD=udrc,DEV=0");
+  //std::string audioDev("plughw:CARD=Device,DEV=0");  // for USB soundcard - list with aplay -L
 
-  std::string port;
+  std::string vptyPath("ttyMMDVM0");
   bool daemon = false;
+ 
+  if(getuid() == 0) vptyPath = "/dev/ttyMMDVM0";
+    
+  for(int i=1; i<argc; i++) {
+        char *arg = argv[i];
+        char *param = NULL;
+	
+	if(arg[0] == '-' && arg[1] == 'd') daemon = true;
+	
+        else {
+	  if(arg[0] == '-' && i+1 < argc) param = argv[i+1];
 
-  if (argc == 2) {
-    port = std::string(argv[1U]);
-  } else {
-    port = std::string(argv[2U]);
-    daemon = true;
+          if((strcmp("-port", arg)==0) && param != NULL) {
+             i++;
+             vptyPath = param;
+          } else if(strcmp("-audio", arg)==0 && param != NULL) {
+             i++;
+             audioDev = param;
+          } else 
+	     ::fprintf(stderr, "MMDVM-UDRC modem\nUsage: MMDVM [-daemon] -port <vpty port> -audio <audiodev>\n\nUsing params: <vpty port> = %s | <audiodev> = %s \n", vptyPath.c_str(), audioDev.c_str());
+ 	}
+   }
+
+  bool ret = serial.open("/dev/ptmx", vptyPath);
+  if (!ret) {
+	::fprintf(stderr,"Unable to open serial port on vpty: %s\n",vptyPath.c_str());
+	return 1;
   }
 
-  bool ret = serial.open(port);
-  if (!ret)
-    return 1;
-
-  CSoundCardReaderWriter sound("hw:CARD=udrc,DEV=0", "hw:CARD=udrc,DEV=0", 24000U, RX_BLOCK_SIZE);
+  CSoundCardReaderWriter sound(audioDev, audioDev, 24000U, RX_BLOCK_SIZE);
   sound.setCallback(&io);
 
   ret = sound.open();
-  if (!ret)
-    return 1;
+  if (!ret) {
+	::fprintf(stderr,"Unable to open audio device: %s\n",audioDev.c_str());
+    	return 1;
+  }
 
   if (daemon) {
     // Create new process

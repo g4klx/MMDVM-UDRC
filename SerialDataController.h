@@ -43,8 +43,8 @@ public:
 	CSerialDataController();
 	~CSerialDataController();
 
-	bool open(const std::string& device, SERIAL_SPEED speed);
-
+	bool open(const std::string& device, SERIAL_SPEED speed, const std::string& vptyPath = NULL);
+	
 	int  read(unsigned char* buffer, unsigned int length);
 	int  write(const unsigned char* buffer, unsigned int length);
 
