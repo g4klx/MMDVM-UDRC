@@ -1,5 +1,6 @@
 /*
  *   Copyright (C) 2015,2016,2017,2018 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2018 by Bryan Biedenkapp <gatekeep@gmail.com>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -56,6 +57,7 @@ private:
   float       m_threshold[16U];
   float       m_thresholdVal;
   uint8_t     m_averagePtr;
+  uint8_t     m_duid;
 
   void processNone(float sample);
   void processHdr(float sample);

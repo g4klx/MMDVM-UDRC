@@ -45,7 +45,7 @@ const float P25_LEVELD = -0.504;
 const uint8_t P25_START_SYNC = 0x77U;
 
 CP25TX::CP25TX() :
-m_buffer(1500U),
+m_buffer(4000U),
 m_modFilter(P25_RADIO_SYMBOL_LENGTH, RC_0_2_FILTER_PHASE_LEN, RC_0_2_FILTER, 4U),
 m_lpFilter(LOWPASS_FILTER_LEN, LOWPASS_FILTER, P25_RADIO_SYMBOL_LENGTH * 4U),
 m_poBuffer(),
