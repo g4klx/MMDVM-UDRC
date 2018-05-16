@@ -45,7 +45,7 @@ const uint8_t YSF_START_SYNC = 0x77U;
 const uint8_t YSF_END_SYNC   = 0xFFU;
 
 CYSFTX::CYSFTX() :
-m_buffer(1500U),
+m_buffer(4000U),
 m_modFilter(YSF_RADIO_SYMBOL_LENGTH, RRC_0_2_FILTER_PHASE_LEN, RRC_0_2_FILTER, 4U),
 m_poBuffer(),
 m_poLen(0U),
