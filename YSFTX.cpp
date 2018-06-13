@@ -43,6 +43,7 @@ const float YSF_LEVELD_LO = -0.379;
 
 const uint8_t YSF_START_SYNC = 0x77U;
 const uint8_t YSF_END_SYNC   = 0xFFU;
+const uint8_t YSF_HANG       = 0x00U;
 
 CYSFTX::CYSFTX() :
 m_buffer(4000U),
@@ -51,16 +52,19 @@ m_poBuffer(),
 m_poLen(0U),
 m_poPtr(0U),
 m_txDelay(240U),      // 200ms
-m_loDev(false)
+m_loDev(false),
+m_txHang(4800U),      // 4s
+m_txCount(0U)
 {
 }
 
 void CYSFTX::process()
 {
-  if (m_buffer.getData() == 0U && m_poLen == 0U)
+  if (m_buffer.getData() == 0U && m_poLen == 0U && m_txCount == 0U)
     return;
 
-  if (m_poLen == 0U) {
+  // If we have YSF data to transmit, do so.
+  if (m_poLen == 0U && m_buffer.getData() > 0U) {
     if (!m_tx) {
       for (uint16_t i = 0U; i < m_txDelay; i++)
         m_poBuffer[m_poLen++] = YSF_START_SYNC;
@@ -75,19 +79,36 @@ void CYSFTX::process()
   }
 
   if (m_poLen > 0U) {
+    // Transmit YSF data.
     uint16_t space = io.getSpace();
-    
+
     while (space > (4U * YSF_RADIO_SYMBOL_LENGTH)) {
       uint8_t c = m_poBuffer[m_poPtr++];
       writeByte(c);
 
+      // Reduce space and reset the hang timer.
       space -= 4U * YSF_RADIO_SYMBOL_LENGTH;
-      
+      if (m_duplex)
+        m_txCount = m_txHang;
+
       if (m_poPtr >= m_poLen) {
         m_poPtr = 0U;
         m_poLen = 0U;
         return;
       }
+    }
+  } else if (m_txCount > 0U) {
+    // Transmit silence until the hang timer has expired.
+    uint16_t space = io.getSpace();
+
+    while (space > (4U * YSF_RADIO_SYMBOL_LENGTH)) {
+      writeSilence();
+
+      space -= 4U * YSF_RADIO_SYMBOL_LENGTH;
+      m_txCount--;
+
+      if (m_txCount == 0U)
+        return;
     }
   }
 }
@@ -136,6 +157,16 @@ void CYSFTX::writeByte(uint8_t c)
   io.write(STATE_YSF, outBuffer, YSF_RADIO_SYMBOL_LENGTH * 4U);
 }
 
+void CYSFTX::writeSilence()
+{
+  float inBuffer[4U] = {0.0F, 0.0F, 0.0F, 0.0F};
+  float outBuffer[YSF_RADIO_SYMBOL_LENGTH * 4U];
+
+  m_modFilter.process(inBuffer, outBuffer, 4U);
+
+  io.write(STATE_YSF, outBuffer, YSF_RADIO_SYMBOL_LENGTH * 4U);
+}
+
 void CYSFTX::setTXDelay(uint8_t delay)
 {
   m_txDelay = 600U + uint16_t(delay) * 12U;        // 500ms + tx delay
@@ -149,8 +180,9 @@ uint8_t CYSFTX::getSpace() const
   return m_buffer.getSpace() / YSF_FRAME_LENGTH_BYTES;
 }
 
-void CYSFTX::setLoDev(bool on)
+void CYSFTX::setParams(bool on, uint8_t txHang)
 {
-  m_loDev = on;
+  m_loDev  = on;
+  m_txHang = txHang * 1200U;
 }
 
