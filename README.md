@@ -1,4 +1,4 @@
-This is the source code of the MMDVM program/daemon that supports D-Star, DMR, System Fusion, P25, and NXDN modes via the UDRC Pi interface.
+This is the source code of the MMDVM program/daemon that supports D-Star, DMR, System Fusion, P25, NXDN, and POCSAG modes via the UDRC Pi interface.
 
 It will provide all of these modes in simplex mode, and all bar DMR in duplex mode. It is not possible to get DMR to operate in duplex mode via the UDRC. If you want full duplex in all modes then you will need to run a full MMDVM system including hardware.
 

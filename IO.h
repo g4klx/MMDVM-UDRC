@@ -43,7 +43,7 @@ public:
   
   void interrupt();
 
-  void setParameters(bool rxInvert, bool txInvert, bool pttInvert, float rxLevel, float cwIdTXLevel, float dstarTXLevel, float dmrTXLevel, float ysfTXLevel, float p25TXLevel, float nxdnLevel, float txDCOffset, float rxDCOffset);
+  void setParameters(bool rxInvert, bool txInvert, bool pttInvert, float rxLevel, float cwIdTXLevel, float dstarTXLevel, float dmrTXLevel, float ysfTXLevel, float p25TXLevel, float nxdnTXLevel, float pocsagTXLevel, float txDCOffset, float rxDCOffset);
 
   void getOverflow(bool& adcOverflow, bool& dacOverflow);
 
@@ -79,6 +79,7 @@ private:
   float                m_ysfTXLevel;
   float                m_p25TXLevel;
   float                m_nxdnTXLevel;
+  float                m_pocsagTXLevel;
 
   float                m_rxDCOffset;
   float                m_txDCOffset;

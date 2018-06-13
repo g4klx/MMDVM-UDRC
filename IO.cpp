@@ -83,6 +83,7 @@ m_dmrTXLevel(0.5F),
 m_ysfTXLevel(0.5F),
 m_p25TXLevel(0.5F),
 m_nxdnTXLevel(0.5F),
+m_pocsagTXLevel(0.5F),
 m_rxDCOffset(DC_OFFSET),
 m_txDCOffset(DC_OFFSET),
 m_ledCount(0U),
@@ -279,6 +280,9 @@ void CIO::write(MMDVM_STATE mode, float* samples, uint16_t length)
     case STATE_NXDN:
       txLevel = m_nxdnTXLevel;
       break;
+    case STATE_POCSAG:
+      txLevel = m_pocsagTXLevel;
+      break;
     default:
       txLevel = m_cwIdTXLevel;
       break;
@@ -317,17 +321,18 @@ void CIO::setMode()
 {
 }
 
-void CIO::setParameters(bool rxInvert, bool txInvert, bool pttInvert, float rxLevel, float cwIdTXLevel, float dstarTXLevel, float dmrTXLevel, float ysfTXLevel, float p25TXLevel, float nxdnTXLevel, float txDCOffset, float rxDCOffset)
+void CIO::setParameters(bool rxInvert, bool txInvert, bool pttInvert, float rxLevel, float cwIdTXLevel, float dstarTXLevel, float dmrTXLevel, float ysfTXLevel, float p25TXLevel, float nxdnTXLevel, float pocsagTXLevel, float txDCOffset, float rxDCOffset)
 {
   m_pttInvert = pttInvert;
 
-  m_rxLevel      = rxLevel;
-  m_cwIdTXLevel  = cwIdTXLevel;
-  m_dstarTXLevel = dstarTXLevel;
-  m_dmrTXLevel   = dmrTXLevel;
-  m_ysfTXLevel   = ysfTXLevel;
-  m_p25TXLevel   = p25TXLevel;
-  m_nxdnTXLevel  = nxdnTXLevel;
+  m_rxLevel       = rxLevel;
+  m_cwIdTXLevel   = cwIdTXLevel;
+  m_dstarTXLevel  = dstarTXLevel;
+  m_dmrTXLevel    = dmrTXLevel;
+  m_ysfTXLevel    = ysfTXLevel;
+  m_p25TXLevel    = p25TXLevel;
+  m_nxdnTXLevel   = nxdnTXLevel;
+  m_pocsagTXLevel = pocsagTXLevel;
 
   m_rxDCOffset   = DC_OFFSET + rxDCOffset;
   m_txDCOffset   = DC_OFFSET + txDCOffset;
@@ -336,11 +341,12 @@ void CIO::setParameters(bool rxInvert, bool txInvert, bool pttInvert, float rxLe
     m_rxLevel = -m_rxLevel;
   
   if (txInvert) {
-    m_dstarTXLevel = -m_dstarTXLevel;
-    m_dmrTXLevel   = -m_dmrTXLevel;
-    m_ysfTXLevel   = -m_ysfTXLevel;
-    m_p25TXLevel   = -m_p25TXLevel;
-    m_nxdnTXLevel  = -m_nxdnTXLevel;
+    m_dstarTXLevel  = -m_dstarTXLevel;
+    m_dmrTXLevel    = -m_dmrTXLevel;
+    m_ysfTXLevel    = -m_ysfTXLevel;
+    m_p25TXLevel    = -m_p25TXLevel;
+    m_nxdnTXLevel   = -m_nxdnTXLevel;
+    m_pocsagTXLevel = -m_pocsagTXLevel;
   }
 }
 
