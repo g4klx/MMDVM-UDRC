@@ -119,11 +119,11 @@ void CSerialPort::getStatus()
 {
   io.resetWatchdog();
 
-  uint8_t reply[15U];
+  uint8_t reply[20U];
 
   // Send all sorts of interesting internal values
   reply[0U]  = MMDVM_FRAME_START;
-  reply[1U]  = 11U;
+  reply[1U]  = 12U;
   reply[2U]  = MMDVM_GET_STATUS;
 
   reply[3U]  = 0x00U;
@@ -137,6 +137,8 @@ void CSerialPort::getStatus()
     reply[3U] |= 0x08U;
   if (m_nxdnEnable)
     reply[3U] |= 0x10U;
+  if (m_pocsagEnable)
+    reply[3U] |= 0x20U;
 
   reply[4U]  = uint8_t(m_modemState);
 
@@ -191,7 +193,12 @@ void CSerialPort::getStatus()
   else
     reply[11U] = 0U;
 
-  m_serialPort.write(reply, 12);
+  if (m_pocsagEnable)
+    reply[12U] = pocsagTX.getSpace();
+  else
+    reply[12U] = 0U;
+
+  m_serialPort.write(reply, 13);
 }
 
 void CSerialPort::getVersion()
