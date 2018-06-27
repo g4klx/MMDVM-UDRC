@@ -28,10 +28,14 @@ const uint16_t POCSAG_RADIO_SYMBOL_LENGTH = 20U;
 const float POCSAG_LEVEL1[] = { 0.741,  0.741,  0.741,  0.741,  0.741,  0.741,  0.741,  0.741,  0.741,  0.741,  0.741,  0.741,  0.741,  0.741,  0.741,  0.741,  0.741,  0.741,  0.741,  0.741};
 const float POCSAG_LEVEL0[] = {-0.741, -0.741, -0.741, -0.741, -0.741, -0.741, -0.741, -0.741, -0.741, -0.741, -0.741, -0.741, -0.741, -0.741, -0.741, -0.741, -0.741, -0.741, -0.741, -0.741};
 
+const float SHAPING_FILTER[] = {0.1667F, 0.1667F, 0.1667F, 0.1667F, 0.1667F, 0.1667F};
+const uint16_t SHAPING_FILTER_LEN = 6U;
+
 const uint8_t POCSAG_SYNC = 0xAAU;
 
 CPOCSAGTX::CPOCSAGTX() :
 m_buffer(4000U),
+m_modFilter(SHAPING_FILTER_LEN, SHAPING_FILTER, POCSAG_RADIO_SYMBOL_LENGTH * 8U),
 m_poBuffer(),
 m_poLen(0U),
 m_poPtr(0U),
@@ -93,7 +97,8 @@ uint8_t CPOCSAGTX::writeData(const uint8_t* data, uint8_t length)
 
 void CPOCSAGTX::writeByte(uint8_t c)
 {
-  float buffer[POCSAG_RADIO_SYMBOL_LENGTH * 8U];
+  float inBuffer[POCSAG_RADIO_SYMBOL_LENGTH * 8U];
+  float outBuffer[POCSAG_RADIO_SYMBOL_LENGTH * 8U];
 
   const uint8_t MASK = 0x80U;
 
@@ -101,15 +106,17 @@ void CPOCSAGTX::writeByte(uint8_t c)
   for (uint8_t i = 0U; i < 8U; i++, c <<= 1, n += POCSAG_RADIO_SYMBOL_LENGTH) {
     switch (c & MASK) {
       case 0x80U:
-        ::memcpy(buffer + n, POCSAG_LEVEL1, POCSAG_RADIO_SYMBOL_LENGTH * sizeof(float));
+        ::memcpy(inBuffer + n, POCSAG_LEVEL1, POCSAG_RADIO_SYMBOL_LENGTH * sizeof(float));
         break;
       default:
-        ::memcpy(buffer + n, POCSAG_LEVEL0, POCSAG_RADIO_SYMBOL_LENGTH * sizeof(float));
+        ::memcpy(inBuffer + n, POCSAG_LEVEL0, POCSAG_RADIO_SYMBOL_LENGTH * sizeof(float));
         break;
     }
   }
 
-  io.write(STATE_POCSAG, buffer, POCSAG_RADIO_SYMBOL_LENGTH * 8U);
+  m_modFilter.process(inBuffer, outBuffer, POCSAG_RADIO_SYMBOL_LENGTH * 8U);
+
+  io.write(STATE_POCSAG, outBuffer, POCSAG_RADIO_SYMBOL_LENGTH * 8U);
 }
 
 void CPOCSAGTX::setTXDelay(uint8_t delay)

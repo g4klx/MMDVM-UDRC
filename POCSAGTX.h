@@ -20,6 +20,7 @@
 #define  POCSAGTX_H
 
 #include "SerialRB.h"
+#include "FIR.h"
 
 class CPOCSAGTX {
 public:
@@ -34,11 +35,12 @@ public:
   uint8_t getSpace() const;
 
 private:
-  CSerialRB                        m_buffer;
-  uint8_t                          m_poBuffer[200U];
-  uint16_t                         m_poLen;
-  uint16_t                         m_poPtr;
-  uint16_t                         m_txDelay;
+  CSerialRB m_buffer;
+  CFIR      m_modFilter;
+  uint8_t   m_poBuffer[200U];
+  uint16_t  m_poLen;
+  uint16_t  m_poPtr;
+  uint16_t  m_txDelay;
 
   void writeByte(uint8_t c);
 };
