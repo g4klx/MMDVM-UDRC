@@ -121,7 +121,7 @@ const uint8_t INTERLEAVE_TABLE_TX[] = {
   0x4AU, 0x07U, 0x4EU, 0x02U, 0x51U, 0x05U, 0x02U, 0x05U, 0x06U, 0x01U,
   0x09U, 0x05U, 0x0DU, 0x01U, 0x10U, 0x05U, 0x14U, 0x01U, 0x17U, 0x05U,
   0x1BU, 0x01U, 0x1EU, 0x05U, 0x22U, 0x01U, 0x25U, 0x05U, 0x29U, 0x01U,
-  0x2CU, 0x05U, 0x30U, 0x00U, 0x33U, 0x03U, 0x36U, 0x06U, 0x3AU, 0x01U, 
+  0x2CU, 0x05U, 0x30U, 0x00U, 0x33U, 0x03U, 0x36U, 0x06U, 0x3AU, 0x01U,
   0x3DU, 0x04U, 0x40U, 0x07U, 0x44U, 0x02U, 0x47U, 0x05U, 0x4BU, 0x00U,
   0x4EU, 0x03U, 0x51U, 0x06U, 0x02U, 0x06U, 0x06U, 0x02U, 0x09U, 0x06U,
   0x0DU, 0x02U, 0x10U, 0x06U, 0x14U, 0x02U, 0x17U, 0x06U, 0x1BU, 0x02U,
@@ -222,14 +222,14 @@ void CDStarTX::process()
       buffer[0U]  = FRAME_SYNC[0U];
       buffer[1U]  = FRAME_SYNC[1U];
       buffer[2U] |= FRAME_SYNC[2U];
-      
+
       for (uint8_t i = 0U; i < 85U; i++)
         m_poBuffer[m_poLen++] = buffer[i];
     }
 
     m_poPtr = 0U;
   }
- 
+
   if (type == DSTAR_DATA && m_poLen == 0U) {
     // Pop the type byte off
     m_buffer.get();
@@ -248,19 +248,19 @@ void CDStarTX::process()
       for (uint8_t i = 0U; i < DSTAR_END_SYNC_LENGTH_BYTES; i++)
         m_poBuffer[m_poLen++] = DSTAR_END_SYNC_BYTES[i];
     }
-     
+
     m_poPtr = 0U;
   }
 
   if (m_poLen > 0U) {
     uint16_t space = io.getSpace();
-    
+
     while (space > (8U * DSTAR_RADIO_SYMBOL_LENGTH)) {
       uint8_t c = m_poBuffer[m_poPtr++];
       writeByte(c);
 
       space -= 8U * DSTAR_RADIO_SYMBOL_LENGTH;
-      
+
       if (m_poPtr >= m_poLen) {
         m_poPtr = 0U;
         m_poLen = 0U;
@@ -285,7 +285,7 @@ uint8_t CDStarTX::writeHeader(const uint8_t* header, uint8_t length)
 
   for (uint8_t i = 0U; i < DSTAR_HEADER_LENGTH_BYTES; i++)
     m_buffer.put(header[i]);
-    
+
   return 0U;
 }
 
@@ -304,7 +304,7 @@ uint8_t CDStarTX::writeData(const uint8_t* data, uint8_t length)
 
   for (uint8_t i = 0U; i < DSTAR_DATA_LENGTH_BYTES; i++)
     m_buffer.put(data[i]);
-    
+
   return 0U;
 }
 
@@ -381,7 +381,7 @@ void CDStarTX::txHeader(const uint8_t* in, uint8_t* out) const
     if (i < 660U) {
       if (d & 0x08U)
         out[INTERLEAVE_TABLE_TX[i * 2U]] |= (0x01U << INTERLEAVE_TABLE_TX[i * 2U + 1U]);
-        i++;
+      i++;
 
       if (d & 0x04U)
         out[INTERLEAVE_TABLE_TX[i * 2U]] |= (0x01U << INTERLEAVE_TABLE_TX[i * 2U + 1U]);
@@ -419,7 +419,7 @@ void CDStarTX::writeByte(uint8_t c)
   }
 
   m_filter.process(inBuffer, outBuffer, 8U);
-  
+
   io.write(STATE_DSTAR, outBuffer, DSTAR_RADIO_SYMBOL_LENGTH * 8U);
 }
 
