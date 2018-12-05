@@ -336,10 +336,10 @@ void CIO::setParameters(bool rxInvert, bool txInvert, bool pttInvert, float rxLe
 
   m_rxDCOffset   = DC_OFFSET + rxDCOffset;
   m_txDCOffset   = DC_OFFSET + txDCOffset;
-  
+
   if (rxInvert)
     m_rxLevel = -m_rxLevel;
-  
+
   if (txInvert) {
     m_dstarTXLevel  = -m_dstarTXLevel;
     m_dmrTXLevel    = -m_dmrTXLevel;
@@ -390,9 +390,9 @@ void CIO::readCallback(const float* input, unsigned int nSamples)
     m_rxBuffer.put(input[i]);
 }
 
-void CIO::writeCallback(float* output, unsigned int& nSamples)
+void CIO::writeCallback(float* output, int& nSamples)
 {
-  for (unsigned int i = 0U; i < nSamples; i++)
+  for (int i = 0U; i < nSamples; i++)
     m_txBuffer.get(output[i]);
 }
 

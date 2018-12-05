@@ -40,7 +40,7 @@ public:
   void setDecode(bool dcd);
   void setADCDetection(bool detect);
   void setMode();
-  
+
   void interrupt();
 
   void setParameters(bool rxInvert, bool txInvert, bool pttInvert, float rxLevel, float cwIdTXLevel, float dstarTXLevel, float dmrTXLevel, float ysfTXLevel, float p25TXLevel, float nxdnTXLevel, float pocsagTXLevel, float txDCOffset, float rxDCOffset);
@@ -54,9 +54,9 @@ public:
 
   void resetWatchdog();
   uint32_t getWatchdog();
-  
+
   virtual void readCallback(const float* input, unsigned int nSamples);
-  virtual void writeCallback(float* output, unsigned int& nSamples);
+  virtual void writeCallback(float* output, int& nSamples);
 
 private:
   bool                 m_started;
