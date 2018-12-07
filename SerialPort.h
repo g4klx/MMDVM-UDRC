@@ -65,7 +65,9 @@ class CSerialPort {
 public:
   CSerialPort();
 
-  bool open(const std::string& port, const std::string& vptyPath);
+  void setPtyPath(const std::string& ptyPath);
+
+  bool open();
 
   void process();
 
@@ -102,6 +104,7 @@ private:
   uint8_t   m_len;
   bool      m_debug;
   CSerialRB m_repeat;
+  std::string m_ptyPath;
 
   int     m_fd;
 

@@ -97,8 +97,13 @@ m_buffer(),
 m_ptr(0U),
 m_len(0U),
 m_debug(true),
-m_repeat()
+m_repeat(),
+m_ptyPath("/dev/ttyMMDVM0")
 {
+}
+
+void CSerialPort::setPtyPath(const std::string& ptyPath) {
+    m_ptyPath = ptyPath;
 }
 
 void CSerialPort::sendACK()
@@ -506,8 +511,8 @@ void CSerialPort::setMode(MMDVM_STATE modemState)
   io.setMode();
 }
 
-bool CSerialPort::open(const std::string& port, const std::string& path) {
-	assert(!path.empty());
+bool CSerialPort::open() {
+	assert(!m_ptyPath.empty());
 
     m_fd = ::posix_openpt(O_RDWR | O_NOCTTY | O_NDELAY);
 	if (m_fd < 0) {
@@ -522,14 +527,14 @@ bool CSerialPort::open(const std::string& port, const std::string& path) {
 
 	char* pts_name = ::ptsname(m_fd);
 
-	if (::unlink(path.c_str()) == -1)
-		::fprintf(stderr, "Link does not exist: %s <> %s\n", pts_name, path.c_str());
+	if (::unlink(m_ptyPath.c_str()) == -1)
+		::fprintf(stderr, "Link does not exist: %s <> %s\n", pts_name, m_ptyPath.c_str());
 
-	if ((::symlink(pts_name, path.c_str())) == -1) {
-		::fprintf(stderr,"Error creating symlink from %s to %s\n", pts_name, path.c_str());
+	if ((::symlink(pts_name, m_ptyPath.c_str())) == -1) {
+		::fprintf(stderr,"Error creating symlink from %s to %s\n", pts_name, m_ptyPath.c_str());
 		return false;
 	} else {
-		::fprintf(stderr, "Virtual pty: %s <> %s\n", pts_name, path.c_str());
+		::fprintf(stderr, "Virtual pty: %s <> %s\n", pts_name, m_ptyPath.c_str());
 	}
 
 	return true;
@@ -573,8 +578,9 @@ void CSerialPort::process()
         if(errno == EAGAIN) {
             return;
         } else if(errno == EIO) {
-            // XXX Handle here where the pipe is broken.
-            // XXX Reopen the file descriptor here.
+            ::fprintf(stderr, "Slave disconnected, reopening master\n");
+            ::close(m_fd);
+            open();
             return;
         } else {
             ::fprintf(stderr, "Couldn't read from pty: %s\n", strerror(errno));
