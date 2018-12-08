@@ -25,12 +25,56 @@
 
 #include <string>
 
+// XXX This may need to move out of here so other things can access it
+#pragma pack(push, 1)
+struct mmdvm_config_frame {
+    uint8_t config_flags;
+    uint8_t protocol_enable_flags;
+    uint8_t tx_delay;
+    uint8_t modem_state;
+    uint8_t rx_level;
+    uint8_t cw_id_level;
+    uint8_t color_code;
+    uint8_t unknown1;
+    uint8_t unknown2;
+    uint8_t dstar_tx_level;
+    uint8_t dmr_tx_level;
+    uint8_t ysf_tx_level;
+    uint8_t p25_tx_level;
+    uint8_t tx_dc_offset;
+    uint8_t rx_dc_offset;
+    uint8_t nxdn_tx_level;
+    uint8_t ysf_tx_hang;
+    uint8_t pocsag_tx_level;
+};
+
+struct nak_frame {
+    uint8_t failed_operation;
+    uint8_t error;
+};
+
+struct mmdvm_frame {
+    uint8_t start_byte;
+    uint8_t length;
+    uint8_t operation;
+    union {
+        uint8_t data[97];
+        struct mmdvm_config_frame config;
+        uint8_t mode;
+        struct nak_frame nak;
+    };
+};
+
+#pragma pack(pop)
+
 class CSerialPort {
 public:
   CSerialPort();
 
-  bool open(const std::string& port, const std::string& vptyPath);
-  
+  void setPtyPath(const std::string& ptyPath);
+
+  bool open();
+
   void process();
 
   void writeDStarHeader(const uint8_t* header, uint8_t length);
@@ -61,19 +105,20 @@ public:
   void writeDebug(const char* text, int16_t n1, int16_t n2, int16_t n3, int16_t n4);
 
 private:
-  CSerialController m_serialPort;
-  uint8_t   m_buffer[256U];
   uint8_t   m_ptr;
   uint8_t   m_len;
   bool      m_debug;
   CSerialRB m_repeat;
+  std::string m_ptyPath;
 
-  void    sendACK();
-  void    sendNAK(uint8_t err);
+  int     m_fd;
+
+  void    sendACK(mmdvm_frame &frame);
+  void    sendNAK(mmdvm_frame &frame, uint8_t err);
   void    getStatus();
   void    getVersion();
-  uint8_t setConfig(const uint8_t* data, uint8_t length);
-  uint8_t setMode(const uint8_t* data, uint8_t length);
+  uint8_t setConfig(mmdvm_frame &frame);
+  uint8_t setMode(mmdvm_frame &frame);
   void    setMode(MMDVM_STATE modemState);
 
   // Hardware versions
@@ -82,6 +127,11 @@ private:
   int     availableForWriteInt(uint8_t n);
   uint8_t readInt(uint8_t n);
   void    writeInt(uint8_t n, const uint8_t* data, uint16_t length, bool flush = false);
+
+  inline void writeSingleByteReply(const uint8_t reply);
+  void writeDataFrame(const uint8_t operation, const uint8_t *data, uint8_t length);
+
+  int write(const unsigned char* buffer, unsigned int length);
 };
 
 #endif

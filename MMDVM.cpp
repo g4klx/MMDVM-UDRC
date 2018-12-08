@@ -71,7 +71,7 @@ CIO io;
 void loop()
 {
   serial.process();
-  
+
   io.process();
 
   // The following is for transmitting
@@ -114,16 +114,16 @@ int main(int argc, char** argv)
   std::string audioDev("hw:CARD=udrc,DEV=0");
   //std::string audioDev("plughw:CARD=Device,DEV=0");  // for USB soundcard - list with aplay -L
 
-  std::string vptyPath("ttyMMDVM0");
+  std::string ptyPath("ttyMMDVM0");
   bool daemon = false;
- 
+
   if (::getuid() == 0)
-    vptyPath = "/dev/ttyMMDVM0";
-    
+    ptyPath = "/dev/ttyMMDVM0";
+
   for (int i=1; i<argc; i++) {
     char* arg = argv[i];
     char* param = NULL;
-	
+
     if (arg[0] == '-' && arg[1] == 'd') {
       daemon = true;
     } else {
@@ -132,19 +132,20 @@ int main(int argc, char** argv)
 
       if (::strcmp("-port", arg) == 0 && param != NULL) {
         i++;
-        vptyPath = param;
+        ptyPath = param;
       } else if (::strcmp("-audio", arg) == 0 && param != NULL) {
         i++;
         audioDev = param;
-      } else { 
-        ::fprintf(stderr, "MMDVM-UDRC modem\nUsage: MMDVM [-daemon] -port <vpty port> -audio <audiodev>\n\nUsing params: <vpty port> = %s | <audiodev> = %s \n", vptyPath.c_str(), audioDev.c_str());
+      } else {
+        ::fprintf(stderr, "MMDVM-UDRC modem\nUsage: MMDVM [-daemon] -port <vpty port> -audio <audiodev>\n\nUsing params: <vpty port> = %s | <audiodev> = %s \n", ptyPath.c_str(), audioDev.c_str());
       }
     }
   }
 
-  bool ret = serial.open("/dev/ptmx", vptyPath);
+  serial.setPtyPath(ptyPath);
+  bool ret = serial.open();
   if (!ret) {
-    ::fprintf(stderr,"Unable to open serial port on vpty: %s\n",vptyPath.c_str());
+    ::fprintf(stderr,"Unable to open serial port on vpty: %s\n",ptyPath.c_str());
     return 1;
   }
 
@@ -205,7 +206,7 @@ int main(int argc, char** argv)
         return 1;
       }
 
-      // Double check it worked (AKA Paranoia) 
+      // Double check it worked (AKA Paranoia)
       if (setuid(0) != -1) {
         ::fprintf(stderr, "It's possible to regain root - something is wrong!, exiting\n");
         return 1;
