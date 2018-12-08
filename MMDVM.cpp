@@ -148,7 +148,7 @@ int main(int argc, char** argv)
     return 1;
   }
 
-  CSoundCardReaderWriter sound(audioDev, audioDev, 24000U, RX_BLOCK_SIZE);
+  CSoundCardReaderWriter sound(audioDev, audioDev, 48000U, RX_BLOCK_SIZE);
   sound.setCallback(&io);
 
   ret = sound.open();

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016,2017 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2016,2017,2018 by Jonathan Naylor G4KLX
  *   Copyright (C) 2018 by Bryan Biedenkapp <gatekeep@gmail.com>
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 #if !defined(P25DEFINES_H)
 #define  P25DEFINES_H
 
-const unsigned int P25_RADIO_SYMBOL_LENGTH = 5U;      // At 24 kHz sample rate
+const unsigned int P25_RADIO_SYMBOL_LENGTH = 10U;      // At 48 kHz sample rate
 
 const unsigned int P25_HDR_FRAME_LENGTH_BYTES      = 99U;
 const unsigned int P25_HDR_FRAME_LENGTH_BITS       = P25_HDR_FRAME_LENGTH_BYTES * 8U;

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2009-2015,2017 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2009-2015,2017,2018 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 #if !defined(DSTARDEFINES_H)
 #define  DSTARDEFINES_H
 
-const unsigned int DSTAR_RADIO_SYMBOL_LENGTH = 5U;      // At 24 kHz sample rate
+const unsigned int DSTAR_RADIO_SYMBOL_LENGTH = 10U;      // At 48 kHz sample rate
 
 const unsigned int DSTAR_HEADER_LENGTH_BYTES   = 41U;
 
