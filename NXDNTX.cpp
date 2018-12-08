@@ -48,10 +48,10 @@ static float RRC_0_2_FILTER[] = {0.0015564F,  0.0021668F,  0.0028077F,  0.003418
 								 0.0034181F,  0.0028077F,  0.0021668F,  0.0015564F}; // numTaps = 180, L = 20
 const uint16_t RRC_0_2_FILTER_PHASE_LEN = 9U; // phaseLength = numTaps/L
 
-const float NXDN_LEVELA =  0.02243F;
-const float NXDN_LEVELB =  0.00748F;
-const float NXDN_LEVELC = -0.00748F;
-const float NXDN_LEVELD = -0.02243F;
+const float NXDN_LEVELA =  0.294;
+const float NXDN_LEVELB =  0.098;
+const float NXDN_LEVELC = -0.098;
+const float NXDN_LEVELD = -0.294;
 
 const uint8_t NXDN_PREAMBLE[] = {0x57U, 0x75U, 0xFDU};
 const uint8_t NXDN_SYNC = 0x5FU;

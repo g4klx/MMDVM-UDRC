@@ -33,8 +33,8 @@ static float GAUSSIAN_0_35_FILTER[] = {0.0000000F, 0.0000000F, 0.0000000F, 0.000
 									   0.4180731F, 0.2848293F, 0.1809748F, 0.1072420F, 0.0592669F, 0.0305490F}; // numTaps = 30, L = 10
 const uint16_t GAUSSIAN_0_35_FILTER_PHASE_LEN = 3U; // phaseLength = numTaps/L
 
-const float DSTAR_LEVEL0 = -0.025666F;
-const float DSTAR_LEVEL1 =  0.025666F;
+const float DSTAR_LEVEL0 = -0.336;
+const float DSTAR_LEVEL1 =  0.336;
 
 const uint8_t BIT_MASK_TABLE[] = {0x80U, 0x40U, 0x20U, 0x10U, 0x08U, 0x04U, 0x02U, 0x01U};
 

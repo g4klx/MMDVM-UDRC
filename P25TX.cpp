@@ -43,10 +43,10 @@ static float LOWPASS_FILTER[] = {0.0394910F, -0.0686972F, 0.1315958F, -0.2564165
 								-0.0686972F, 0.0394910F};
 const uint16_t LOWPASS_FILTER_LEN = 10U;
 
-const float P25_LEVELA =  0.03845F;
-const float P25_LEVELB =  0.01282F;
-const float P25_LEVELC = -0.01282F;
-const float P25_LEVELD = -0.03845F;
+const float P25_LEVELA =  0.504;
+const float P25_LEVELB =  0.168;
+const float P25_LEVELC = -0.168;
+const float P25_LEVELD = -0.504;
 
 const uint8_t P25_START_SYNC = 0x77U;
 

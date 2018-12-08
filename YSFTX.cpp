@@ -37,15 +37,15 @@ static float RRC_0_2_FILTER[] = {0.0000000F,  0.0000000F,  0.0000000F,  0.000000
 								 0.0180670F,  0.0259407F}; // numTaps = 90, L = 10
 const uint16_t RRC_0_2_FILTER_PHASE_LEN = 9U; // phaseLength = numTaps/L
 
-const float YSF_LEVELA_HI =  0.057771F;
-const float YSF_LEVELB_HI =  0.019440F;
-const float YSF_LEVELC_HI = -0.019440F;
-const float YSF_LEVELD_HI = -0.057771F;
-
-const float YSF_LEVELA_LO =  0.028932F;
-const float YSF_LEVELB_LO =  0.009644F;
-const float YSF_LEVELC_LO = -0.009644F;
-const float YSF_LEVELD_LO = -0.028932F;
+const float YSF_LEVELA_HI =  0.757;
+const float YSF_LEVELB_HI =  0.252;
+const float YSF_LEVELC_HI = -0.252;
+const float YSF_LEVELD_HI = -0.757;
+ 
+const float YSF_LEVELA_LO =  0.379;
+const float YSF_LEVELB_LO =  0.126;
+const float YSF_LEVELC_LO = -0.126;
+const float YSF_LEVELD_LO = -0.379;
 
 const uint8_t YSF_START_SYNC = 0x77U;
 const uint8_t YSF_END_SYNC   = 0xFFU;

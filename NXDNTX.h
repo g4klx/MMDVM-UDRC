@@ -21,7 +21,6 @@
 
 #include "FIRInterpolator.h"
 #include "SerialRB.h"
-#include "FIR.h"
 
 class CNXDNTX {
 public:
