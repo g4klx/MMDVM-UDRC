@@ -48,6 +48,11 @@ struct mmdvm_config_frame {
     uint8_t pocsag_tx_level;
 };
 
+struct nak_frame {
+    uint8_t failed_operation;
+    uint8_t error;
+};
+
 struct mmdvm_frame {
     uint8_t start_byte;
     uint8_t length;
@@ -56,6 +61,7 @@ struct mmdvm_frame {
         uint8_t data[97];
         struct mmdvm_config_frame config;
         uint8_t mode;
+        struct nak_frame nak;
     };
 };
 
@@ -99,7 +105,6 @@ public:
   void writeDebug(const char* text, int16_t n1, int16_t n2, int16_t n3, int16_t n4);
 
 private:
-  uint8_t   m_buffer[256U];
   uint8_t   m_ptr;
   uint8_t   m_len;
   bool      m_debug;
@@ -108,8 +113,8 @@ private:
 
   int     m_fd;
 
-  void    sendACK();
-  void    sendNAK(uint8_t err);
+  void    sendACK(mmdvm_frame &frame);
+  void    sendNAK(mmdvm_frame &frame, uint8_t err);
   void    getStatus();
   void    getVersion();
   uint8_t setConfig(mmdvm_frame &frame);
