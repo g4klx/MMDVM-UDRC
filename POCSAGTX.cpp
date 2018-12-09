@@ -34,7 +34,7 @@ const float POCSAG_LEVEL0[] = {-0.741F, -0.741F, -0.741F, -0.741F, -0.741F, -0.7
 							   -0.741F, -0.741F, -0.741F, -0.741F, -0.741F, -0.741F, -0.741F, -0.741F, -0.741F, -0.741F, -0.741F,
 							   -0.741F, -0.741F, -0.741F, -0.741F, -0.741F, -0.741F, -0.741F};
 
-const float SHAPING_FILTER[] = {0.5F, 0.5F, 0.5F, 0.5F, 0.5F, 0.5F, 0.5F, 0.5F, 0.5F, 0.5F, 0.5F, 0.5F};
+const float SHAPING_FILTER[] = {0.0833F, 0.0833F, 0.0833F, 0.0833F, 0.0833F, 0.0833F, 0.0833F, 0.0833F, 0.0833F, 0.0833F, 0.0833F, 0.0833F};
 const uint16_t SHAPING_FILTER_LEN = 12U;
 
 const uint8_t POCSAG_SYNC = 0xAAU;
