@@ -8,6 +8,7 @@ OBJECTS = Biquad.o CalDMR.o CalDStarRX.o CalDStarTX.o CalNXDN.o CalP25.o CWIdTX.
 	  NXDNTX.o P25RX.o P25TX.o POCSAGTX.o SampleRB.o SerialPort.o SerialRB.o \
 	  SoundCardReaderWriter.o Thread.o Utils.o YSFRX.o YSFTX.o
 
+.PHONY: all
 all:	MMDVM
 
 MMDVM:	$(OBJECTS)
@@ -19,6 +20,7 @@ MMDVM:	$(OBJECTS)
 	$(CXX) $(CFLAGS) -c -o $@ $<
 	$(CXX) -MM $(CFLAGS) $< > $*.d
 
+.PHONY: clean
 clean:
 	$(RM) MMDVM *.o *.d *.bak *~
 
