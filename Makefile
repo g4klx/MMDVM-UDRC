@@ -13,8 +13,11 @@ all:	MMDVM
 MMDVM:	$(OBJECTS)
 	$(CXX) $(OBJECTS) $(LDFLAGS) $(LIBS) -o MMDVM
 
+-include $(OBJECTS:.o=.d)
+
 %.o: %.cpp
 	$(CXX) $(CFLAGS) -c -o $@ $<
+	$(CXX) -MM $(CFLAGS) $< > $*.d
 
 clean:
 	$(RM) MMDVM *.o *.d *.bak *~
