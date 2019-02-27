@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2002-2004,2007-2011,2013,2014-2018 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2002-2004,2007-2011,2013,2014-2019 by Jonathan Naylor G4KLX
  *   Copyright (C) 1999-2001 by Thomas Sailor HB9JNX
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -52,111 +52,104 @@ bool CSerialController::open(const std::string& device, SERIAL_SPEED speed, bool
 		return false;
 	}
 
-	if (::isatty(m_fd) == 0) {
-		::fprintf(stderr, "%s is not a TTY device\n", device.c_str());
-		::close(m_fd);
-		return false;
-	}
-
-	if (::grantpt(m_fd) == -1) {
-		::fprintf(stderr, "Error granting pseudotty to : %s\n", device.c_str());
-		return false;
-	}
-
-	if (::unlockpt(m_fd) == -1) {
-		::fprintf(stderr, "Error unlocking pseudotty for : %s\n", device.c_str());
-		return false;
-        }
-
-	//char cwdpath[256];		// append cwd with vptypath ?
-	//::getcwd(cwdpath, 256);
-
-	char* pts_name = ::ptsname(m_fd);
-
-	if (::unlink(path.c_str()) == -1)
-		::fprintf(stderr, "Link does not exist: %s <> %s\n", pts_name, path.c_str());
-
-	if ((::symlink(pts_name, path.c_str())) == -1) {		
-		::fprintf(stderr,"Error creating symlink from %s to %s\n", pts_name, path.c_str());
-		return false;
-	} else {
-		::fprintf(stderr, "Virtual pty: %s <> %s\n", pts_name, path.c_str());
-	}
-
-	termios termios;
-	if (::tcgetattr(m_fd, &termios) < 0) {
-		::fprintf(stderr, "Cannot get the attributes for %s\n", device.c_str());
-		::close(m_fd);
-		return false;
-	}
-
-	termios.c_lflag    &= ~(ECHO | ECHOE | ICANON | IEXTEN | ISIG);
-	termios.c_iflag    &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON | IXOFF | IXANY);
-	termios.c_cflag    &= ~(CSIZE | CSTOPB | PARENB | CRTSCTS);
-	termios.c_cflag    |= CS8;
-	termios.c_oflag    &= ~(OPOST);
-	termios.c_cc[VMIN]  = 0;
-	termios.c_cc[VTIME] = 10;
-
-	switch (speed) {
-		case SERIAL_1200:
-			::cfsetospeed(&termios, B1200);
-			::cfsetispeed(&termios, B1200);
-			break;
-		case SERIAL_2400:
-			::cfsetospeed(&termios, B2400);
-			::cfsetispeed(&termios, B2400);
-			break;
-		case SERIAL_4800:
-			::cfsetospeed(&termios, B4800);
-			::cfsetispeed(&termios, B4800);
-			break;
-		case SERIAL_9600:
-			::cfsetospeed(&termios, B9600);
-			::cfsetispeed(&termios, B9600);
-			break;
-		case SERIAL_19200:
-			::cfsetospeed(&termios, B19200);
-			::cfsetispeed(&termios, B19200);
-			break;
-		case SERIAL_38400:
-			::cfsetospeed(&termios, B38400);
-			::cfsetispeed(&termios, B38400);
-			break;
-		case SERIAL_115200:
-			::cfsetospeed(&termios, B115200);
-			::cfsetispeed(&termios, B115200);
-			break;
-		case SERIAL_230400:
-			::cfsetospeed(&termios, B230400);
-			::cfsetispeed(&termios, B230400);
-			break;
-		default:
-			::fprintf(stderr, "Unsupported serial port speed - %d\n", int(speed));
-			::close(m_fd);
+	if (::isatty(m_fd) == 1) {
+		if (::grantpt(m_fd) == -1) {
+			::fprintf(stderr, "Error granting pseudotty to : %s\n", device.c_str());
 			return false;
-	}
+		}
 
-	if (::tcsetattr(m_fd, TCSANOW, &termios) < 0) {
-		::fprintf(stderr, "Cannot set the attributes for %s\n", device.c_str());
-		::close(m_fd);
-		return false;
-	}
+		if (::unlockpt(m_fd) == -1) {
+			::fprintf(stderr, "Error unlocking pseudotty for : %s\n", device.c_str());
+			return false;
+		}
 
-	if (assertRTS) {
-		unsigned int y;
-		if (::ioctl(m_fd, TIOCMGET, &y) < 0) {
-			::fprintf(stderr, "Cannot get the control attributes for %s\n", device.c_str());
+		char* pts_name = ::ptsname(m_fd);
+
+		if (::unlink(path.c_str()) == -1)
+			::fprintf(stderr, "Link does not exist: %s <> %s\n", pts_name, path.c_str());
+
+		if ((::symlink(pts_name, path.c_str())) == -1) {
+			::fprintf(stderr,"Error creating symlink from %s to %s\n", pts_name, path.c_str());
+			return false;
+		} else {
+			::fprintf(stderr, "Virtual pty: %s <> %s\n", pts_name, path.c_str());
+		}
+
+		termios termios;
+		if (::tcgetattr(m_fd, &termios) < 0) {
+			::fprintf(stderr, "Cannot get the attributes for %s\n", device.c_str());
 			::close(m_fd);
 			return false;
 		}
 
-		y |= TIOCM_RTS;
-                                                                                
-		if (::ioctl(m_fd, TIOCMSET, &y) < 0) {
-			::fprintf(stderr, "Cannot set the control attributes for %s\n", device.c_str());
+		termios.c_lflag    &= ~(ECHO | ECHOE | ICANON | IEXTEN | ISIG);
+		termios.c_iflag    &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON | IXOFF | IXANY);
+		termios.c_cflag    &= ~(CSIZE | CSTOPB | PARENB | CRTSCTS);
+		termios.c_cflag    |= CS8;
+		termios.c_oflag    &= ~(OPOST);
+		termios.c_cc[VMIN]  = 0;
+		termios.c_cc[VTIME] = 10;
+
+		switch (speed) {
+			case SERIAL_1200:
+				::cfsetospeed(&termios, B1200);
+				::cfsetispeed(&termios, B1200);
+				break;
+			case SERIAL_2400:
+				::cfsetospeed(&termios, B2400);
+				::cfsetispeed(&termios, B2400);
+				break;
+			case SERIAL_4800:
+				::cfsetospeed(&termios, B4800);
+				::cfsetispeed(&termios, B4800);
+				break;
+			case SERIAL_9600:
+				::cfsetospeed(&termios, B9600);
+				::cfsetispeed(&termios, B9600);
+				break;
+			case SERIAL_19200:
+				::cfsetospeed(&termios, B19200);
+				::cfsetispeed(&termios, B19200);
+				break;
+			case SERIAL_38400:
+				::cfsetospeed(&termios, B38400);
+				::cfsetispeed(&termios, B38400);
+				break;
+			case SERIAL_115200:
+				::cfsetospeed(&termios, B115200);
+				::cfsetispeed(&termios, B115200);
+				break;
+			case SERIAL_230400:
+				::cfsetospeed(&termios, B230400);
+				::cfsetispeed(&termios, B230400);
+				break;
+			default:
+				::fprintf(stderr, "Unsupported serial port speed - %d\n", int(speed));
+				::close(m_fd);
+				return false;
+		}
+
+		if (::tcsetattr(m_fd, TCSANOW, &termios) < 0) {
+			::fprintf(stderr, "Cannot set the attributes for %s\n", device.c_str());
 			::close(m_fd);
 			return false;
+		}
+
+		if (assertRTS) {
+			unsigned int y;
+			if (::ioctl(m_fd, TIOCMGET, &y) < 0) {
+				::fprintf(stderr, "Cannot get the control attributes for %s\n", device.c_str());
+				::close(m_fd);
+				return false;
+			}
+
+			y |= TIOCM_RTS;
+                                                                                
+			if (::ioctl(m_fd, TIOCMSET, &y) < 0) {
+				::fprintf(stderr, "Cannot set the control attributes for %s\n", device.c_str());
+				::close(m_fd);
+				return false;
+			}
 		}
 	}
 
