@@ -52,7 +52,7 @@ bool CSerialController::open(const std::string& device, SERIAL_SPEED speed, bool
 		return false;
 	}
 
-	if (::isatty(m_fd) == 1) {
+	if (::isatty(m_fd)) {
 		if (::grantpt(m_fd) == -1) {
 			::fprintf(stderr, "Error granting pseudotty to : %s\n", device.c_str());
 			return false;

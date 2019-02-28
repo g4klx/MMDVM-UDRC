@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2015,2016,2017,2018 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2015-2019 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -40,7 +40,9 @@ enum MMDVM_STATE {
   STATE_RSSICAL   = 96,
   STATE_CWID      = 97,
   STATE_DMRCAL    = 98,
-  STATE_DSTARCAL  = 99
+  STATE_DSTARCAL  = 99,
+  STATE_INTCAL    = 100,
+  STATE_CALPOCSAG = 101
 };
 
 #include "SerialPort.h"
@@ -60,6 +62,7 @@ enum MMDVM_STATE {
 #include "CalDMR.h"
 #include "CalP25.h"
 #include "CalNXDN.h"
+#include "CalPOCSAG.h"
 #include "CWIdTX.h"
 #include "Debug.h"
 #include "IO.h"
@@ -108,6 +111,7 @@ extern CCalDStarTX calDStarTX;
 extern CCalDMR     calDMR;
 extern CCalP25     calP25;
 extern CCalNXDN    calNXDN;
+extern CCalPOCSAG  calPOCSAG;
 
 extern CCWIdTX cwIdTX;
 

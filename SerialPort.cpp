@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2013,2015,2016,2017,2018 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2013,2015-2019 by Jonathan Naylor G4KLX
  *   Copyright (C) 2016 by Colin Durbridge G4EML
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -101,7 +101,8 @@ CSerialPort::CSerialPort() :
 {
 }
 
-void CSerialPort::setPtyPath(const std::string& ptyPath) {
+void CSerialPort::setPtyPath(const std::string& ptyPath)
+{
 	m_ptyPath = ptyPath;
 }
 
@@ -277,7 +278,8 @@ uint8_t CSerialPort::setConfig(mmdvm_frame &frame)
 	    modemState != STATE_LFCAL &&
 	    modemState != STATE_P25CAL1K &&
 	    modemState != STATE_DMRDMO1K &&
-	    modemState != STATE_NXDNCAL1K)
+	    modemState != STATE_NXDNCAL1K &&
+		modemState != STATE_POCSAGCAL)
 		return 4;
 	if (modemState == STATE_DSTAR && !dstarEnable)
 		return 4;
@@ -365,7 +367,8 @@ uint8_t CSerialPort::setMode(mmdvm_frame &frame)
 	    modemState != STATE_LFCAL &&
 	    modemState != STATE_P25CAL1K &&
 	    modemState != STATE_DMRDMO1K &&
-	    modemState != STATE_NXDNCAL1K)
+	    modemState != STATE_NXDNCAL1K &&
+		modemState != STATE_POCSAGCAL)
 		return 4;
 	if (modemState == STATE_DSTAR && !m_dstarEnable)
 		return 4;

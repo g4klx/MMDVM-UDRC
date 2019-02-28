@@ -62,6 +62,7 @@ CCalDStarTX calDStarTX;
 CCalDMR     calDMR;
 CCalP25     calP25;
 CCalNXDN    calNXDN;
+CCalPOCSAG  calPOCSAG;
 
 CCWIdTX cwIdTX;
 
@@ -90,13 +91,13 @@ void loop()
   if (m_nxdnEnable && m_modemState == STATE_NXDN)
     nxdnTX.process();
 
-  if (m_pocsagEnable && m_modemState == STATE_POCSAG)
+  if (m_pocsagEnable && (m_modemState == STATE_POCSAG || pocsagTX.busy()))
     pocsagTX.process();
 
   if (m_modemState == STATE_DSTARCAL)
     calDStarTX.process();
 
-  if (m_modemState == STATE_DMRCAL || m_modemState == STATE_LFCAL || m_modemState == STATE_DMRDMO1K)
+  if (m_modemState == STATE_DMRCAL || m_modemState == STATE_LFCAL || m_modemState == STATE_DMRCAL1K || m_modemState == STATE_DMRDMO1K)
     calDMR.process();
 
   if (m_modemState == STATE_P25CAL1K)
@@ -104,6 +105,9 @@ void loop()
 
   if (m_modemState == STATE_NXDNCAL1K)
     calNXDN.process();
+
+  if (m_modemState == STATE_POCSAGCAL)
+    calPOCSAG.process();
 
   if (m_modemState == STATE_IDLE)
     cwIdTX.process();

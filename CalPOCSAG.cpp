@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2015-2019 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2019 by Florian Wolters DF2ET
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -16,36 +16,34 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#if !defined(POCSAGTX_H)
-#define  POCSAGTX_H
+#include "Config.h"
+#include "Globals.h"
+#include "CalPOCSAG.h"
 
-#include "SerialRB.h"
-#include "FIR.h"
 
-class CPOCSAGTX {
-public:
-  CPOCSAGTX();
+CCalPOCSAG::CCalPOCSAG() :
+m_state(POCSAGCAL_IDLE)
+{
+}
 
-  uint8_t writeData(const uint8_t* data, uint8_t length);
+void CCalPOCSAG::process()
+{
+  if (m_state == POCSAGCAL_IDLE)
+    return;
 
-  void process();
+  uint16_t space = io.getSpace();
+  if (space <= 165U)
+    return;
 
-  void setTXDelay(uint8_t delay);
+  pocsagTX.writeByte(0xAAU);
+}
 
-  uint8_t getSpace() const;
+uint8_t CCalPOCSAG::write(const uint8_t* data, uint8_t length)
+{
+  if (length != 1U)
+    return 4U;
 
-  bool busy();
+  m_state = data[0U] == 1U ? POCSAGCAL_TX : POCSAGCAL_IDLE;
 
-private:
-  CSerialRB m_buffer;
-  CFIR      m_modFilter;
-  uint8_t   m_poBuffer[200U];
-  uint16_t  m_poLen;
-  uint16_t  m_poPtr;
-  uint16_t  m_txDelay;
-
-  void writeByte(uint8_t c);
-};
-
-#endif
-
+  return 0U;
+}

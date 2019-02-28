@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2015-2019 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2019 by Florian Wolters DF2ET
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -16,36 +16,26 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#if !defined(POCSAGTX_H)
-#define  POCSAGTX_H
+#if !defined(CALPOCSAG_H)
+#define  CALPOCSAG_H
 
-#include "SerialRB.h"
-#include "FIR.h"
+#include "Config.h"
 
-class CPOCSAGTX {
+enum POCSAGCAL {
+  POCSAGCAL_IDLE,
+  POCSAGCAL_TX
+};
+
+class CCalPOCSAG {
 public:
-  CPOCSAGTX();
-
-  uint8_t writeData(const uint8_t* data, uint8_t length);
+  CCalPOCSAG();
 
   void process();
 
-  void setTXDelay(uint8_t delay);
-
-  uint8_t getSpace() const;
-
-  bool busy();
+  uint8_t write(const uint8_t* data, uint8_t length);
 
 private:
-  CSerialRB m_buffer;
-  CFIR      m_modFilter;
-  uint8_t   m_poBuffer[200U];
-  uint16_t  m_poLen;
-  uint16_t  m_poPtr;
-  uint16_t  m_txDelay;
-
-  void writeByte(uint8_t c);
+  POCSAGCAL m_state;
 };
 
 #endif
-
