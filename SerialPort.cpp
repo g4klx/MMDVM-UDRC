@@ -393,121 +393,67 @@ void CSerialPort::setMode(MMDVM_STATE modemState)
 	switch (modemState) {
 	case STATE_DMR:
 		DEBUG1("Mode set to DMR");
-		dstarRX.reset();
-		ysfRX.reset();
-		p25RX.reset();
-		nxdnRX.reset();
-		cwIdTX.reset();
 		break;
 	case STATE_DSTAR:
 		DEBUG1("Mode set to D-Star");
-		dmrDMORX.reset();
-		ysfRX.reset();
-		p25RX.reset();
-		nxdnRX.reset();
-		cwIdTX.reset();
 		break;
 	case STATE_YSF:
 		DEBUG1("Mode set to System Fusion");
-		dmrDMORX.reset();
-		dstarRX.reset();
-		p25RX.reset();
-		nxdnRX.reset();
-		cwIdTX.reset();
 		break;
 	case STATE_P25:
 		DEBUG1("Mode set to P25");
-		dmrDMORX.reset();
-		dstarRX.reset();
-		ysfRX.reset();
-		nxdnRX.reset();
-		cwIdTX.reset();
 		break;
 	case STATE_NXDN:
 		DEBUG1("Mode set to NXDN");
-		dmrDMORX.reset();
-		dstarRX.reset();
-		ysfRX.reset();
-		p25RX.reset();
-		cwIdTX.reset();
 		break;
 	case STATE_POCSAG:
 		DEBUG1("Mode set to POCSAG");
-		dmrDMORX.reset();
-		dstarRX.reset();
-		ysfRX.reset();
-		p25RX.reset();
-		nxdnRX.reset();
-		cwIdTX.reset();
 		break;
 	case STATE_DSTARCAL:
 		DEBUG1("Mode set to D-Star Calibrate");
-		dmrDMORX.reset();
-		dstarRX.reset();
-		ysfRX.reset();
-		p25RX.reset();
-		nxdnRX.reset();
-		cwIdTX.reset();
 		break;
 	case STATE_DMRCAL:
 		DEBUG1("Mode set to DMR Calibrate");
-		dmrDMORX.reset();
-		dstarRX.reset();
-		ysfRX.reset();
-		p25RX.reset();
-		nxdnRX.reset();
-		cwIdTX.reset();
 		break;
 	case STATE_RSSICAL:
 		DEBUG1("Mode set to RSSI Calibrate");
-		dmrDMORX.reset();
-		dstarRX.reset();
-		ysfRX.reset();
-		p25RX.reset();
-		nxdnRX.reset();
-		cwIdTX.reset();
 		break;
 	case STATE_LFCAL:
 		DEBUG1("Mode set to 80 Hz Calibrate");
-		dmrDMORX.reset();
-		dstarRX.reset();
-		ysfRX.reset();
-		p25RX.reset();
-		nxdnRX.reset();
-		cwIdTX.reset();
 		break;
 	case STATE_P25CAL1K:
 		DEBUG1("Mode set to P25 1011 Hz Calibrate");
-		dmrDMORX.reset();
-		dstarRX.reset();
-		ysfRX.reset();
-		p25RX.reset();
-		nxdnRX.reset();
-		cwIdTX.reset();
 		break;
 	case STATE_DMRDMO1K:
 		DEBUG1("Mode set to DMR MS 1031 Hz Calibrate");
-		dmrDMORX.reset();
-		dstarRX.reset();
-		ysfRX.reset();
-		p25RX.reset();
-		nxdnRX.reset();
-		cwIdTX.reset();
 		break;
 	case STATE_NXDNCAL1K:
 		DEBUG1("Mode set to NXDN 1031 Hz Calibrate");
-		dmrDMORX.reset();
-		dstarRX.reset();
-		ysfRX.reset();
-		p25RX.reset();
-		nxdnRX.reset();
-		cwIdTX.reset();
 		break;
-	default:
+	case STATE_POCSAGCAL:
+		DEBUG1("Mode set to POCSAG Calibrate");
+		break;
+	default:		// STATE_IDLE
 		DEBUG1("Mode set to Idle");
-		// STATE_IDLE
 		break;
 	}
+
+	if (modemState != STATE_DSTAR)
+		dstarRX.reset();
+
+	if (modemState != STATE_DMR)
+		dmrDMORX.reset();
+
+	if (modemState != STATE_YSF)
+		ysfRX.reset();
+
+	if (modemState != STATE_P25)
+		p25RX.reset();
+
+	if (modemState != STATE_NXDN)
+		nxdnRX.reset();
+
+	cwIdTX.reset();
 
 	m_modemState = modemState;
 
