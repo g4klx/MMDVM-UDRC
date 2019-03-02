@@ -19,8 +19,6 @@
 #if !defined(CALPOCSAG_H)
 #define  CALPOCSAG_H
 
-#include "Config.h"
-
 enum POCSAGCAL {
   POCSAGCAL_IDLE,
   POCSAGCAL_TX

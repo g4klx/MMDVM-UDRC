@@ -32,6 +32,8 @@ public:
 
   void setTXDelay(uint8_t delay);
 
+  void writeByte(uint8_t c);
+
   uint8_t getSpace() const;
 
   bool busy();
@@ -43,8 +45,6 @@ private:
   uint16_t  m_poLen;
   uint16_t  m_poPtr;
   uint16_t  m_txDelay;
-
-  void writeByte(uint8_t c);
 };
 
 #endif

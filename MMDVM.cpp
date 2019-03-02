@@ -97,7 +97,7 @@ void loop()
   if (m_modemState == STATE_DSTARCAL)
     calDStarTX.process();
 
-  if (m_modemState == STATE_DMRCAL || m_modemState == STATE_LFCAL || m_modemState == STATE_DMRCAL1K || m_modemState == STATE_DMRDMO1K)
+  if (m_modemState == STATE_DMRCAL || m_modemState == STATE_LFCAL || m_modemState == STATE_DMRDMO1K)
     calDMR.process();
 
   if (m_modemState == STATE_P25CAL1K)
@@ -106,7 +106,7 @@ void loop()
   if (m_modemState == STATE_NXDNCAL1K)
     calNXDN.process();
 
-  if (m_modemState == STATE_POCSAGCAL)
+  if (m_modemState == STATE_CALPOCSAG)
     calPOCSAG.process();
 
   if (m_modemState == STATE_IDLE)

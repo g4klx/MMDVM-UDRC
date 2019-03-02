@@ -279,7 +279,7 @@ uint8_t CSerialPort::setConfig(mmdvm_frame &frame)
 	    modemState != STATE_P25CAL1K &&
 	    modemState != STATE_DMRDMO1K &&
 	    modemState != STATE_NXDNCAL1K &&
-		modemState != STATE_POCSAGCAL)
+            modemState != STATE_CALPOCSAG)
 		return 4;
 	if (modemState == STATE_DSTAR && !dstarEnable)
 		return 4;
@@ -368,7 +368,7 @@ uint8_t CSerialPort::setMode(mmdvm_frame &frame)
 	    modemState != STATE_P25CAL1K &&
 	    modemState != STATE_DMRDMO1K &&
 	    modemState != STATE_NXDNCAL1K &&
-		modemState != STATE_POCSAGCAL)
+            modemState != STATE_CALPOCSAG)
 		return 4;
 	if (modemState == STATE_DSTAR && !m_dstarEnable)
 		return 4;
@@ -430,7 +430,7 @@ void CSerialPort::setMode(MMDVM_STATE modemState)
 	case STATE_NXDNCAL1K:
 		DEBUG1("Mode set to NXDN 1031 Hz Calibrate");
 		break;
-	case STATE_POCSAGCAL:
+	case STATE_CALPOCSAG:
 		DEBUG1("Mode set to POCSAG Calibrate");
 		break;
 	default:		// STATE_IDLE
